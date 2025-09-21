@@ -22,6 +22,15 @@ export default {
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
+          hover: "hsl(var(--primary-hover))",
+        },
+        "hero-gradient": {
+          start: "hsl(var(--hero-gradient-start))",
+          end: "hsl(var(--hero-gradient-end))",
+        },
+        "category": {
+          bg: "hsl(var(--category-bg))",
+          hover: "hsl(var(--category-hover))",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
