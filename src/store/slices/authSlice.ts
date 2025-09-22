@@ -5,6 +5,9 @@ interface User {
   name: string;
   email: string;
   avatar?: string;
+  phone?: string;
+  address?: string;
+  bio?: string;
 }
 
 interface AuthState {
@@ -17,7 +20,7 @@ interface AuthState {
 const initialState: AuthState = {
   user: null,
   token: localStorage.getItem('token'),
-  isAuthenticated: false,
+  isAuthenticated: !!localStorage.getItem('token'),
   isLoading: false,
 };
 
