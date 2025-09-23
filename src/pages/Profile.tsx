@@ -13,10 +13,14 @@ import { RootState } from '@/store';
 import { loginSuccess } from '@/store/slices/authSlice';
 import toast from 'react-hot-toast';
 import Header from '@/components/Header';
+import { useNavigate } from 'react-router-dom';
 
 const Profile = () => {
   const { user, isAuthenticated } = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  
+  const [activeTab, setActiveTab] = useState<'profile' | 'borrowed' | 'reviews'>('profile');
   
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -91,6 +95,45 @@ const Profile = () => {
           transition={{ duration: 0.5 }}
           className="max-w-4xl mx-auto"
         >
+          {/* Profile Tabs */}
+          <div className="flex items-center justify-center mb-8">
+            <div className="bg-muted rounded-lg p-1 flex">
+              <button
+                className={`px-6 py-2 rounded-md text-sm font-medium transition-colors ${
+                  activeTab === 'profile'
+                    ? 'bg-background text-foreground shadow-sm'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+                onClick={() => setActiveTab('profile')}
+              >
+                Profile
+              </button>
+              <button
+                className={`px-6 py-2 rounded-md text-sm font-medium transition-colors ${
+                  activeTab === 'borrowed'
+                    ? 'bg-background text-foreground shadow-sm'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+                onClick={() => {
+                  setActiveTab('borrowed');
+                  navigate('/borrowed');
+                }}
+              >
+                Borrowed List
+              </button>
+              <button
+                className={`px-6 py-2 rounded-md text-sm font-medium transition-colors ${
+                  activeTab === 'reviews'
+                    ? 'bg-background text-foreground shadow-sm'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+                onClick={() => setActiveTab('reviews')}
+              >
+                Reviews
+              </button>
+            </div>
+          </div>
+
           <div className="grid gap-6 md:grid-cols-3">
             {/* Profile Card */}
             <Card className="md:col-span-1">

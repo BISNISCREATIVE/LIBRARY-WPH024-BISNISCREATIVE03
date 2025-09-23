@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import BookCard from "./BookCard";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
 // Mock data for books
@@ -77,9 +78,10 @@ const mockBooks = [
 ];
 
 const BookGrid = () => {
+  const navigate = useNavigate();
+  
   const handleBookClick = (bookId: string) => {
-    console.log("Book clicked:", bookId);
-    // Navigate to book detail page
+    navigate(`/book/${bookId}`);
   };
 
   return (

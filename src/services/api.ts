@@ -105,4 +105,27 @@ export const authorsAPI = {
   }
 };
 
+// Borrowed books API endpoints
+export const borrowedAPI = {
+  getBorrowedBooks: async () => {
+    const response = await api.get('/borrowed');
+    return response.data;
+  },
+  
+  borrowBook: async (bookId: string) => {
+    const response = await api.post('/borrowed', { bookId });
+    return response.data;
+  },
+  
+  returnBook: async (borrowId: string) => {
+    const response = await api.put(`/borrowed/${borrowId}/return`);
+    return response.data;
+  },
+  
+  addReview: async (bookId: string, rating: number, comment: string) => {
+    const response = await api.post('/reviews', { bookId, rating, comment });
+    return response.data;
+  }
+};
+
 export default api;

@@ -10,6 +10,9 @@ import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Profile from "./pages/Profile";
+import BookDetail from "./pages/BookDetail";
+import Category from "./pages/Category";
+import BorrowedList from "./pages/BorrowedList";
 import NotFound from "./pages/NotFound";
 import { Toaster as HotToaster } from "react-hot-toast";
 
@@ -45,6 +48,9 @@ const App = () => (
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/book/:id" element={<BookDetail />} />
+            <Route path="/category" element={<Category />} />
+            <Route path="/borrowed" element={<BorrowedList />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
