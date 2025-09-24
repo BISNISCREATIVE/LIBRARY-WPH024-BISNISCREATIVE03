@@ -39,27 +39,27 @@ api.interceptors.response.use(
 // Auth API endpoints
 export const authAPI = {
   login: async (email: string, password: string) => {
-    const response = await api.post('/auth/login', { email, password });
+    const response = await api.post('/api/auth/login', { email, password });
     return response.data;
   },
   
   register: async (name: string, email: string, password: string) => {
-    const response = await api.post('/auth/register', { name, email, password });
+    const response = await api.post('/api/auth/register', { name, email, password });
     return response.data;
   },
   
   getProfile: async () => {
-    const response = await api.get('/auth/profile');
+    const response = await api.get('/api/auth/profile');
     return response.data;
   },
   
   updateProfile: async (data: any) => {
-    const response = await api.put('/auth/profile', data);
+    const response = await api.put('/api/auth/profile', data);
     return response.data;
   },
   
   logout: async () => {
-    const response = await api.post('/auth/logout');
+    const response = await api.post('/api/auth/logout');
     return response.data;
   }
 };
@@ -67,27 +67,27 @@ export const authAPI = {
 // Books API endpoints
 export const booksAPI = {
   getBooks: async (params?: any) => {
-    const response = await api.get('/books', { params });
+    const response = await api.get('/api/books', { params });
     return response.data;
   },
   
   getBook: async (id: string) => {
-    const response = await api.get(`/books/${id}`);
+    const response = await api.get(`/api/books/${id}`);
     return response.data;
   },
   
   searchBooks: async (query: string) => {
-    const response = await api.get(`/books/search?q=${encodeURIComponent(query)}`);
+    const response = await api.get(`/api/books/search?q=${encodeURIComponent(query)}`);
     return response.data;
   },
   
   getCategories: async () => {
-    const response = await api.get('/categories');
+    const response = await api.get('/api/categories');
     return response.data;
   },
   
   getBooksByCategory: async (categoryId: string) => {
-    const response = await api.get(`/categories/${categoryId}/books`);
+    const response = await api.get(`/api/categories/${categoryId}/books`);
     return response.data;
   }
 };
@@ -95,12 +95,12 @@ export const booksAPI = {
 // Authors API endpoints
 export const authorsAPI = {
   getAuthors: async () => {
-    const response = await api.get('/authors');
+    const response = await api.get('/api/authors');
     return response.data;
   },
   
   getAuthor: async (id: string) => {
-    const response = await api.get(`/authors/${id}`);
+    const response = await api.get(`/api/authors/${id}`);
     return response.data;
   }
 };
@@ -108,22 +108,22 @@ export const authorsAPI = {
 // Borrowed books API endpoints
 export const borrowedAPI = {
   getBorrowedBooks: async () => {
-    const response = await api.get('/borrowed');
+    const response = await api.get('/api/borrowed');
     return response.data;
   },
   
   borrowBook: async (bookId: string) => {
-    const response = await api.post('/borrowed', { bookId });
+    const response = await api.post('/api/borrowed', { bookId });
     return response.data;
   },
   
   returnBook: async (borrowId: string) => {
-    const response = await api.put(`/borrowed/${borrowId}/return`);
+    const response = await api.put(`/api/borrowed/${borrowId}/return`);
     return response.data;
   },
   
   addReview: async (bookId: string, rating: number, comment: string) => {
-    const response = await api.post('/reviews', { bookId, rating, comment });
+    const response = await api.post('/api/reviews', { bookId, rating, comment });
     return response.data;
   }
 };
