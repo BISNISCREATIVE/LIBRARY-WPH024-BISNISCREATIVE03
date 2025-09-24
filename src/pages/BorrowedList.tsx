@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { borrowedAPI } from '@/services/api';
+import { loansAPI } from '@/services/api';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store';
 import Header from '@/components/Header';
@@ -48,52 +48,9 @@ const BorrowedList = () => {
   const fetchBorrowedBooks = async () => {
     try {
       setIsLoading(true);
-      // Simulate API call with mock data
-      const mockData: BorrowedBook[] = [
-        {
-          _id: '1',
-          book: {
-            _id: '1',
-            title: 'Book Name',
-            author: 'Author name',
-            cover: '/api/placeholder/120/160',
-            category: 'Category'
-          },
-          borrowDate: '2025-08-29',
-          dueDate: '2025-08-31',
-          status: 'active',
-          duration: 3
-        },
-        {
-          _id: '2',
-          book: {
-            _id: '2',
-            title: 'Book Name',
-            author: 'Author name',
-            cover: '/api/placeholder/120/160',
-            category: 'Category'
-          },
-          borrowDate: '2025-08-29',
-          dueDate: '2025-08-31',
-          status: 'returned',
-          duration: 3
-        },
-        {
-          _id: '3',
-          book: {
-            _id: '3',
-            title: 'Book Name',
-            author: 'Author name',
-            cover: '/api/placeholder/120/160',
-            category: 'Category'
-          },
-          borrowDate: '2025-08-29',
-          dueDate: '2025-08-31',
-          status: 'overdue',
-          duration: 3
-        }
-      ];
-      setBorrowedBooks(mockData);
+      const response = await loansAPI.getMyLoans();
+      setBorrowedBooks(response.data);
+      setFilteredBooks(response.data);
     } catch (error) {
       console.error('Error fetching borrowed books:', error);
       toast.error('Failed to load borrowed books');

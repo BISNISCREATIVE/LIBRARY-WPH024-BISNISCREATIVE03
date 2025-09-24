@@ -15,6 +15,7 @@ import Category from "./pages/Category";
 import BorrowedList from "./pages/BorrowedList";
 import NotFound from "./pages/NotFound";
 import { Toaster as HotToaster } from "react-hot-toast";
+import Cart from "@/components/Cart";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -55,6 +56,7 @@ const App = () => (
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
+        <Cart />
         <ReactQueryDevtools initialIsOpen={false} />
       </TooltipProvider>
     </QueryClientProvider>

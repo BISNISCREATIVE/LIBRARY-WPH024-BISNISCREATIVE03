@@ -1,11 +1,11 @@
-import { Search, Heart, User, Menu, X, ChevronDown, Bell } from "lucide-react";
+import { Search, Heart, User, Menu, X, ChevronDown, Bell, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
 import { RootState } from "@/store";
-import { toggleSearch, closeSearch, setSearchQuery, toggleMobileMenu } from "@/store/slices/uiSlice";
+import { toggleSearch, closeSearch, setSearchQuery, toggleMobileMenu, toggleCart } from "@/store/slices/uiSlice";
 import { logout } from "@/store/slices/authSlice";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -34,6 +34,10 @@ const Header = () => {
   const handleLogout = () => {
     dispatch(logout());
     navigate('/');
+  };
+
+  const handleCartToggle = () => {
+    dispatch(toggleCart());
   };
 
   const getInitials = (name: string) => {
@@ -91,6 +95,12 @@ const Header = () => {
           <div className="flex items-center space-x-2">
             {isAuthenticated ? (
               <>
+                <Button variant="ghost" size="icon" onClick={handleCartToggle} className="relative">
+                  <ShoppingCart className="h-5 w-5" />
+                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-primary text-white text-xs rounded-full flex items-center justify-center">
+                    2
+                  </span>
+                </Button>
                 <Button variant="ghost" size="icon" className="hidden sm:flex relative">
                   <Bell className="h-5 w-5" />
                   <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>

@@ -5,6 +5,7 @@ interface UiState {
   selectedCategory: string | null;
   isSearchActive: boolean;
   isMobileMenuOpen: boolean;
+  isCartOpen: boolean;
 }
 
 const initialState: UiState = {
@@ -12,6 +13,7 @@ const initialState: UiState = {
   selectedCategory: null,
   isSearchActive: false,
   isMobileMenuOpen: false,
+  isCartOpen: false,
 };
 
 const uiSlice = createSlice({
@@ -30,6 +32,12 @@ const uiSlice = createSlice({
     toggleMobileMenu: (state) => {
       state.isMobileMenuOpen = !state.isMobileMenuOpen;
     },
+    setIsCartOpen: (state, action: PayloadAction<boolean>) => {
+      state.isCartOpen = action.payload;
+    },
+    toggleCart: (state) => {
+      state.isCartOpen = !state.isCartOpen;
+    },
     closeSearch: (state) => {
       state.isSearchActive = false;
       state.searchQuery = '';
@@ -42,6 +50,8 @@ export const {
   setSelectedCategory, 
   toggleSearch, 
   toggleMobileMenu, 
-  closeSearch 
+  closeSearch,
+  setIsCartOpen,
+  toggleCart
 } = uiSlice.actions;
 export default uiSlice.reducer;

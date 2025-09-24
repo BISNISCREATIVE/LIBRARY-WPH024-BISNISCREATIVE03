@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { booksAPI, borrowedAPI } from '@/services/api';
+import { booksAPI, loansAPI } from '@/services/api';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store';
 import Header from '@/components/Header';
@@ -99,7 +99,7 @@ const BookDetail = () => {
 
     try {
       setBorrowLoading(true);
-      await borrowedAPI.borrowBook(id!);
+      await loansAPI.borrowBook(id!);
       toast.success('Book borrowed successfully!');
     } catch (error: any) {
       toast.error(error.response?.data?.message || 'Failed to borrow book');

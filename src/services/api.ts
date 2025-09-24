@@ -1,6 +1,23 @@
 import axios from 'axios';
+import { 
+  dummyBooks, 
+  dummyAuthors, 
+  dummyCategories, 
+  dummyUser, 
+  dummyLoans, 
+  dummyReviews,
+  createApiResponse,
+  createApiError,
+  type Book,
+  type Author,
+  type Category,
+  type User,
+  type Loan,
+  type Review
+} from '@/data/dummyData';
 
 const API_BASE_URL = 'https://belibraryformentee-production.up.railway.app';
+const USE_DUMMY_DATA = true; // Set to false when API is ready
 
 // Create axios instance with base configuration
 export const api = axios.create({
@@ -39,26 +56,85 @@ api.interceptors.response.use(
 // Auth API endpoints
 export const authAPI = {
   login: async (email: string, password: string) => {
+    if (USE_DUMMY_DATA) {
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Simple validation for dummy data
+      if (email === 'johndoe@email.com' && password === 'johndoe123') {
+        const token = 'dummy_token_' + Date.now();
+        return createApiResponse({
+          token,
+          user: dummyUser
+        });
+      } else {
+        throw createApiError('Invalid credentials');
+      }
+    }
+    
     const response = await api.post('/api/auth/login', { email, password });
     return response.data;
   },
   
-  register: async (name: string, email: string, password: string) => {
-    const response = await api.post('/api/auth/register', { name, email, password });
+  register: async (name: string, email: string, password: string, phone?: string) => {
+    if (USE_DUMMY_DATA) {
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Simple validation
+      if (!name || !email || !password) {
+        throw createApiError('All fields are required');
+      }
+      
+      if (email === 'johndoe@email.com') {
+        throw createApiError('Email already exists');
+      }
+      
+      const newUser: User = {
+        ...dummyUser,
+        _id: 'user_' + Date.now(),
+        name,
+        email,
+        phone
+      };
+      
+      return createApiResponse({
+        user: newUser,
+        message: 'Registration successful'
+      });
+    }
+    
+    const response = await api.post('/api/auth/register', { name, email, password, phone });
     return response.data;
   },
   
   getProfile: async () => {
-    const response = await api.get('/api/auth/profile');
+    if (USE_DUMMY_DATA) {
+      await new Promise(resolve => setTimeout(resolve, 500));
+      return createApiResponse(dummyUser);
+    }
+    
+    const response = await api.get('/api/me');
     return response.data;
   },
   
-  updateProfile: async (data: any) => {
-    const response = await api.put('/api/auth/profile', data);
+  updateProfile: async (data: Partial<User>) => {
+    if (USE_DUMMY_DATA) {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      const updatedUser = { ...dummyUser, ...data };
+      return createApiResponse(updatedUser);
+    }
+    
+    const response = await api.patch('/api/me', data);
     return response.data;
   },
   
   logout: async () => {
+    if (USE_DUMMY_DATA) {
+      await new Promise(resolve => setTimeout(resolve, 500));
+      return createApiResponse({ message: 'Logged out successfully' });
+    }
+    
     const response = await api.post('/api/auth/logout');
     return response.data;
   }
@@ -66,27 +142,110 @@ export const authAPI = {
 
 // Books API endpoints
 export const booksAPI = {
-  getBooks: async (params?: any) => {
+  getBooks: async (params?: { category?: string; author?: string; search?: string; page?: number; limit?: number }) => {
+    if (USE_DUMMY_DATA) {
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      let filteredBooks = [...dummyBooks];
+      
+      if (params?.category) {
+        filteredBooks = filteredBooks.filter(book => 
+          book.category._id === params.category || book.category.name.toLowerCase().includes(params.category.toLowerCase())
+        );
+      }
+      
+      if (params?.author) {
+        filteredBooks = filteredBooks.filter(book => 
+          book.author.name.toLowerCase().includes(params.author!.toLowerCase())
+        );
+      }
+      
+      if (params?.search) {
+        const searchLower = params.search.toLowerCase();
+        filteredBooks = filteredBooks.filter(book => 
+          book.title.toLowerCase().includes(searchLower) ||
+          book.author.name.toLowerCase().includes(searchLower) ||
+          book.description.toLowerCase().includes(searchLower)
+        );
+      }
+      
+      return createApiResponse({
+        books: filteredBooks,
+        total: filteredBooks.length,
+        page: params?.page || 1,
+        limit: params?.limit || 10
+      });
+    }
+    
     const response = await api.get('/api/books', { params });
     return response.data;
   },
   
   getBook: async (id: string) => {
+    if (USE_DUMMY_DATA) {
+      await new Promise(resolve => setTimeout(resolve, 500));
+      const book = dummyBooks.find(b => b._id === id);
+      if (!book) {
+        throw createApiError('Book not found', 404);
+      }
+      
+      // Add reviews to book detail
+      const bookReviews = dummyReviews.filter(r => r.book._id === id);
+      
+      return createApiResponse({
+        ...book,
+        reviews: bookReviews
+      });
+    }
+    
     const response = await api.get(`/api/books/${id}`);
     return response.data;
   },
   
+  getRecommendedBooks: async () => {
+    if (USE_DUMMY_DATA) {
+      await new Promise(resolve => setTimeout(resolve, 500));
+      // Return top rated books
+      const recommended = [...dummyBooks].sort((a, b) => b.rating - a.rating).slice(0, 6);
+      return createApiResponse(recommended);
+    }
+    
+    const response = await api.get('/api/books/recommend');
+    return response.data;
+  },
+  
   searchBooks: async (query: string) => {
+    if (USE_DUMMY_DATA) {
+      await new Promise(resolve => setTimeout(resolve, 300));
+      const searchLower = query.toLowerCase();
+      const results = dummyBooks.filter(book => 
+        book.title.toLowerCase().includes(searchLower) ||
+        book.author.name.toLowerCase().includes(searchLower)
+      );
+      return createApiResponse(results);
+    }
+    
     const response = await api.get(`/api/books/search?q=${encodeURIComponent(query)}`);
     return response.data;
   },
   
   getCategories: async () => {
+    if (USE_DUMMY_DATA) {
+      await new Promise(resolve => setTimeout(resolve, 300));
+      return createApiResponse(dummyCategories);
+    }
+    
     const response = await api.get('/api/categories');
     return response.data;
   },
   
   getBooksByCategory: async (categoryId: string) => {
+    if (USE_DUMMY_DATA) {
+      await new Promise(resolve => setTimeout(resolve, 500));
+      const books = dummyBooks.filter(book => book.category._id === categoryId);
+      return createApiResponse(books);
+    }
+    
     const response = await api.get(`/api/categories/${categoryId}/books`);
     return response.data;
   }
@@ -95,35 +254,170 @@ export const booksAPI = {
 // Authors API endpoints
 export const authorsAPI = {
   getAuthors: async () => {
+    if (USE_DUMMY_DATA) {
+      await new Promise(resolve => setTimeout(resolve, 300));
+      return createApiResponse(dummyAuthors);
+    }
+    
     const response = await api.get('/api/authors');
     return response.data;
   },
   
   getAuthor: async (id: string) => {
+    if (USE_DUMMY_DATA) {
+      await new Promise(resolve => setTimeout(resolve, 500));
+      const author = dummyAuthors.find(a => a._id === id);
+      if (!author) {
+        throw createApiError('Author not found', 404);
+      }
+      
+      const authorBooks = dummyBooks.filter(book => book.author._id === id);
+      
+      return createApiResponse({
+        ...author,
+        books: authorBooks
+      });
+    }
+    
     const response = await api.get(`/api/authors/${id}`);
+    return response.data;
+  },
+  
+  getBooksByAuthor: async (authorId: string) => {
+    if (USE_DUMMY_DATA) {
+      await new Promise(resolve => setTimeout(resolve, 500));
+      const books = dummyBooks.filter(book => book.author._id === authorId);
+      return createApiResponse(books);
+    }
+    
+    const response = await api.get(`/api/authors/${authorId}/books`);
     return response.data;
   }
 };
 
-// Borrowed books API endpoints
-export const borrowedAPI = {
-  getBorrowedBooks: async () => {
-    const response = await api.get('/api/borrowed');
+// Loans/Borrowed books API endpoints
+export const loansAPI = {
+  getMyLoans: async () => {
+    if (USE_DUMMY_DATA) {
+      await new Promise(resolve => setTimeout(resolve, 500));
+      return createApiResponse(dummyLoans);
+    }
+    
+    const response = await api.get('/api/me/loans');
     return response.data;
   },
   
   borrowBook: async (bookId: string) => {
-    const response = await api.post('/api/borrowed', { bookId });
+    if (USE_DUMMY_DATA) {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      const book = dummyBooks.find(b => b._id === bookId);
+      if (!book) {
+        throw createApiError('Book not found', 404);
+      }
+      
+      if (book.availability.available === 0) {
+        throw createApiError('Book is not available for borrowing');
+      }
+      
+      const newLoan: Loan = {
+        _id: 'loan_' + Date.now(),
+        book,
+        borrowedAt: new Date().toISOString(),
+        dueAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days from now
+        status: 'active'
+      };
+      
+      return createApiResponse(newLoan);
+    }
+    
+    const response = await api.post('/api/loans', { bookId });
     return response.data;
   },
   
-  returnBook: async (borrowId: string) => {
-    const response = await api.put(`/api/borrowed/${borrowId}/return`);
+  returnBook: async (loanId: string) => {
+    if (USE_DUMMY_DATA) {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      const loan = dummyLoans.find(l => l._id === loanId);
+      if (!loan) {
+        throw createApiError('Loan not found', 404);
+      }
+      
+      const updatedLoan: Loan = {
+        ...loan,
+        returnedAt: new Date().toISOString(),
+        status: 'returned'
+      };
+      
+      return createApiResponse(updatedLoan);
+    }
+    
+    const response = await api.patch(`/api/loans/${loanId}/return`);
+    return response.data;
+  }
+};
+
+// Reviews API endpoints
+export const reviewsAPI = {
+  getBookReviews: async (bookId: string) => {
+    if (USE_DUMMY_DATA) {
+      await new Promise(resolve => setTimeout(resolve, 300));
+      const reviews = dummyReviews.filter(r => r.book._id === bookId);
+      return createApiResponse(reviews);
+    }
+    
+    const response = await api.get(`/api/reviews/book/${bookId}`);
+    return response.data;
+  },
+  
+  getMyReviews: async () => {
+    if (USE_DUMMY_DATA) {
+      await new Promise(resolve => setTimeout(resolve, 300));
+      const userReviews = dummyReviews.filter(r => r.user._id === dummyUser._id);
+      return createApiResponse(userReviews);
+    }
+    
+    const response = await api.get('/api/me/reviews');
     return response.data;
   },
   
   addReview: async (bookId: string, rating: number, comment: string) => {
+    if (USE_DUMMY_DATA) {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      const book = dummyBooks.find(b => b._id === bookId);
+      if (!book) {
+        throw createApiError('Book not found', 404);
+      }
+      
+      const newReview: Review = {
+        _id: 'review_' + Date.now(),
+        user: {
+          _id: dummyUser._id,
+          name: dummyUser.name,
+          avatar: dummyUser.avatar
+        },
+        book,
+        rating,
+        comment,
+        createdAt: new Date().toISOString()
+      };
+      
+      return createApiResponse(newReview);
+    }
+    
     const response = await api.post('/api/reviews', { bookId, rating, comment });
+    return response.data;
+  },
+  
+  deleteReview: async (reviewId: string) => {
+    if (USE_DUMMY_DATA) {
+      await new Promise(resolve => setTimeout(resolve, 500));
+      return createApiResponse({ message: 'Review deleted successfully' });
+    }
+    
+    const response = await api.delete(`/api/reviews/${reviewId}`);
     return response.data;
   }
 };
