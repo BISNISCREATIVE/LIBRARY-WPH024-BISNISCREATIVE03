@@ -81,6 +81,9 @@ export const dummyCategories: Category[] = [
   { _id: '6', name: 'Biography', bookCount: 18 },
   { _id: '7', name: 'Self-Help', bookCount: 15 },
   { _id: '8', name: 'Mystery', bookCount: 25 },
+  { _id: '9', name: 'Business & Economics', bookCount: 30 },
+  { _id: '10', name: 'Psychology', bookCount: 20 },
+  { _id: '11', name: 'Finance & Economics', bookCount: 18 },
 ];
 
 // Dummy Authors
@@ -105,6 +108,20 @@ export const dummyAuthors: Author[] = [
     bio: 'Technology expert and bestselling author of programming books.',
     avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
     bookCount: 15
+  },
+  {
+    _id: '4',
+    name: 'Morgan Housel',
+    bio: 'Author of "The Psychology of Money" and financial expert.',
+    avatar: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150&h=150&fit=crop&crop=face',
+    bookCount: 5
+  },
+  {
+    _id: '5',
+    name: 'Emily Chen',
+    bio: 'Psychology professor and bestselling author of behavioral books.',
+    avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b9f3?w=150&h=150&fit=crop&crop=face',
+    bookCount: 7
   },
 ];
 
@@ -152,19 +169,123 @@ export const dummyBooks: Book[] = [
     isbn: '978-0-555666-77-8',
     availability: { total: 4, available: 2 }
   },
+  {
+    _id: '4',
+    title: 'The Psychology of Money',
+    author: dummyAuthors[3],
+    category: dummyCategories[8],
+    cover: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=400&fit=crop',
+    rating: 4.9,
+    totalReviews: 1250,
+    description: 'The Psychology of Money explores how emotions, biases, and human behavior shape the way we think about money, investing, and financial decisions. Morgan Housel shares timeless lessons on wealth, greed, and happiness, showing that financial success is not about knowledge, but about behavior.',
+    pages: 320,
+    publishedAt: '2020-09-08',
+    isbn: '978-0-857197-68-2',
+    availability: { total: 8, available: 5 }
+  },
+  {
+    _id: '5',
+    title: 'Atomic Habits',
+    author: dummyAuthors[4],
+    category: dummyCategories[6],
+    cover: 'https://images.unsplash.com/photo-1589829085413-56de8ae18c73?w=300&h=400&fit=crop',
+    rating: 4.7,
+    totalReviews: 2150,
+    description: 'An Easy & Proven Way to Build Good Habits & Break Bad Ones. No matter your goals, Atomic Habits offers a proven framework for improving--every day.',
+    pages: 320,
+    publishedAt: '2018-10-16',
+    isbn: '978-0-735211-29-3',
+    availability: { total: 6, available: 4 }
+  },
+  {
+    _id: '6',
+    title: 'The Lean Startup',
+    author: dummyAuthors[2],
+    category: dummyCategories[8],
+    cover: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=400&fit=crop',
+    rating: 4.3,
+    totalReviews: 980,
+    description: 'How Today\'s Entrepreneurs Use Continuous Innovation to Create Radically Successful Businesses.',
+    pages: 336,
+    publishedAt: '2011-09-13',
+    isbn: '978-0-307887-89-9',
+    availability: { total: 4, available: 2 }
+  },
+  {
+    _id: '7',
+    title: 'Clean Code',
+    author: dummyAuthors[2],
+    category: dummyCategories[3],
+    cover: 'https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=300&h=400&fit=crop',
+    rating: 4.6,
+    totalReviews: 756,
+    description: 'A Handbook of Agile Software Craftsmanship. Even bad code can function. But if code isn\'t clean, it can bring a development organization to its knees.',
+    pages: 464,
+    publishedAt: '2008-08-01',
+    isbn: '978-0-132350-88-4',
+    availability: { total: 5, available: 3 }
+  },
+  {
+    _id: '8',
+    title: 'Thinking, Fast and Slow',
+    author: dummyAuthors[4],
+    category: dummyCategories[9],
+    cover: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=300&h=400&fit=crop',
+    rating: 4.4,
+    totalReviews: 1890,
+    description: 'Daniel Kahneman takes us on a groundbreaking tour of the mind and explains the two systems that drive the way we think.',
+    pages: 499,
+    publishedAt: '2011-10-25',
+    isbn: '978-0-374275-63-1',
+    availability: { total: 7, available: 4 }
+  }
 ];
 
-// Dummy User
-export const dummyUser: User = {
-  _id: 'user1',
-  name: 'John Doe',
-  email: 'johndoe@email.com',
-  phone: '081234567890',
-  avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
-  address: '123 Main Street, City, Country',
-  bio: 'Book enthusiast and avid reader',
-  role: 'user'
-};
+// Dummy Users
+export const dummyUsers: User[] = [
+  {
+    _id: 'user1',
+    name: 'John Doe',
+    email: 'johndoe@email.com',
+    phone: '081234567890',
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
+    address: '123 Main Street, City, Country',
+    bio: 'Book enthusiast and avid reader',
+    role: 'user'
+  },
+  {
+    _id: 'user2',
+    name: 'Jane Smith',
+    email: 'janesmith@email.com',
+    phone: '081234567891',
+    avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b9f3?w=150&h=150&fit=crop&crop=face',
+    address: '456 Oak Avenue, City, Country',
+    bio: 'Fiction lover and weekend reader',
+    role: 'user'
+  },
+  {
+    _id: 'user3',
+    name: 'Mike Johnson',
+    email: 'mikejohnson@email.com',
+    phone: '081234567892',
+    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
+    address: '789 Pine Street, City, Country',
+    bio: 'Technology enthusiast and programming book collector',
+    role: 'user'
+  },
+  {
+    _id: 'admin1',
+    name: 'Admin User',
+    email: 'admin@email.com',
+    phone: '081234567800',
+    avatar: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150&h=150&fit=crop&crop=face',
+    address: 'Admin Office, Library Building',
+    bio: 'Library administrator',
+    role: 'admin'
+  }
+];
+
+export const dummyUser: User = dummyUsers[0];
 
 // Dummy Loans
 export const dummyLoans: Loan[] = [

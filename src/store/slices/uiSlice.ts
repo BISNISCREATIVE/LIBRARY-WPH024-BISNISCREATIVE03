@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Book } from '@/data/dummyData';
 
 interface UiState {
   searchQuery: string;
@@ -6,6 +7,7 @@ interface UiState {
   isSearchActive: boolean;
   isMobileMenuOpen: boolean;
   isCartOpen: boolean;
+  cartItems: Book[];
 }
 
 const initialState: UiState = {
@@ -14,6 +16,7 @@ const initialState: UiState = {
   isSearchActive: false,
   isMobileMenuOpen: false,
   isCartOpen: false,
+  cartItems: [],
 };
 
 const uiSlice = createSlice({
@@ -42,6 +45,18 @@ const uiSlice = createSlice({
       state.isSearchActive = false;
       state.searchQuery = '';
     },
+    addToCart: (state, action: PayloadAction<Book>) => {
+      const existingItem = state.cartItems.find(item => item._id === action.payload._id);
+      if (!existingItem) {
+        state.cartItems.push(action.payload);
+      }
+    },
+    removeFromCart: (state, action: PayloadAction<string>) => {
+      state.cartItems = state.cartItems.filter(item => item._id !== action.payload);
+    },
+    clearCart: (state) => {
+      state.cartItems = [];
+    },
   },
 });
 
@@ -52,6 +67,9 @@ export const {
   toggleMobileMenu, 
   closeSearch,
   setIsCartOpen,
-  toggleCart
+  toggleCart,
+  addToCart,
+  removeFromCart,
+  clearCart
 } = uiSlice.actions;
 export default uiSlice.reducer;
