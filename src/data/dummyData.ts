@@ -287,6 +287,20 @@ export const dummyUsers: User[] = [
 
 export const dummyUser: User = dummyUsers[0];
 
+// Permanent Login Credentials
+export const permanentCredentials = {
+  user: {
+    email: 'user@library.com',
+    password: 'user123',
+    data: dummyUsers[0]
+  },
+  admin: {
+    email: 'admin@library.com',
+    password: 'admin123',
+    data: dummyUsers[3] // admin user
+  }
+};
+
 // Dummy Loans
 export const dummyLoans: Loan[] = [
   {

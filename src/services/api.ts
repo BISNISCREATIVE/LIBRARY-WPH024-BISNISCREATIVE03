@@ -61,15 +61,36 @@ export const authAPI = {
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       // Simple validation for dummy data
+      const { permanentCredentials } = await import('../data/dummyData');
+      
+      // Check user credentials
+      if (email === permanentCredentials.user.email && password === permanentCredentials.user.password) {
+        const token = 'user_token_' + Date.now();
+        return createApiResponse({
+          token,
+          user: permanentCredentials.user.data
+        });
+      }
+      
+      // Check admin credentials
+      if (email === permanentCredentials.admin.email && password === permanentCredentials.admin.password) {
+        const token = 'admin_token_' + Date.now();
+        return createApiResponse({
+          token,
+          user: permanentCredentials.admin.data
+        });
+      }
+      
+      // Legacy support
       if (email === 'johndoe@email.com' && password === 'johndoe123') {
         const token = 'dummy_token_' + Date.now();
         return createApiResponse({
           token,
           user: dummyUser
         });
-      } else {
-        throw createApiError('Invalid credentials');
       }
+      
+      throw createApiError('Invalid credentials');
     }
     
     const response = await api.post('/api/auth/login', { email, password });
@@ -86,7 +107,11 @@ export const authAPI = {
         throw createApiError('All fields are required');
       }
       
-      if (email === 'johndoe@email.com') {
+      const { permanentCredentials } = await import('../data/dummyData');
+      
+      if (email === permanentCredentials.user.email || 
+          email === permanentCredentials.admin.email || 
+          email === 'johndoe@email.com') {
         throw createApiError('Email already exists');
       }
       
@@ -418,6 +443,137 @@ export const reviewsAPI = {
     }
     
     const response = await api.delete(`/api/reviews/${reviewId}`);
+    return response.data;
+  }
+};
+
+// Admin API
+export const adminAPI = {
+  // Book Management
+  getAllBooks: async () => {
+    if (USE_DUMMY_DATA) {
+      await new Promise(resolve => setTimeout(resolve, 500));
+      return createApiResponse(dummyBooks);
+    }
+    
+    const response = await api.get('/api/admin/books');
+    return response.data;
+  },
+
+  addBook: async (bookData: Partial<Book>) => {
+    if (USE_DUMMY_DATA) {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      const newBook: Book = {
+        _id: 'book_' + Date.now(),
+        title: bookData.title || '',
+        author: bookData.author || dummyAuthors[0],
+        category: bookData.category || dummyCategories[0],
+        cover: bookData.cover || 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=300&h=400&fit=crop',
+        rating: 0,
+        totalReviews: 0,
+        description: bookData.description || '',
+        pages: bookData.pages || 0,
+        publishedAt: bookData.publishedAt || new Date().toISOString(),
+        isbn: bookData.isbn || '',
+        availability: bookData.availability || { total: 1, available: 1 }
+      };
+      
+      return createApiResponse(newBook);
+    }
+    
+    const response = await api.post('/api/admin/books', bookData);
+    return response.data;
+  },
+
+  updateBook: async (bookId: string, bookData: Partial<Book>) => {
+    if (USE_DUMMY_DATA) {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      const existingBook = dummyBooks.find(b => b._id === bookId);
+      if (!existingBook) throw createApiError('Book not found', 404);
+      
+      const updatedBook = { ...existingBook, ...bookData };
+      return createApiResponse(updatedBook);
+    }
+    
+    const response = await api.put(`/api/admin/books/${bookId}`, bookData);
+    return response.data;
+  },
+
+  deleteBook: async (bookId: string) => {
+    if (USE_DUMMY_DATA) {
+      await new Promise(resolve => setTimeout(resolve, 500));
+      return createApiResponse({ message: 'Book deleted successfully' });
+    }
+    
+    const response = await api.delete(`/api/admin/books/${bookId}`);
+    return response.data;
+  },
+
+  // User Management
+  getAllUsers: async () => {
+    if (USE_DUMMY_DATA) {
+      await new Promise(resolve => setTimeout(resolve, 500));
+      const { dummyUsers } = await import('../data/dummyData');
+      const users = dummyUsers.filter(user => user.role === 'user');
+      return createApiResponse(users);
+    }
+    
+    const response = await api.get('/api/admin/users');
+    return response.data;
+  },
+
+  updateUser: async (userId: string, userData: Partial<User>) => {
+    if (USE_DUMMY_DATA) {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      const { dummyUsers } = await import('../data/dummyData');
+      const existingUser = dummyUsers.find(u => u._id === userId);
+      if (!existingUser) throw createApiError('User not found', 404);
+      
+      const updatedUser = { ...existingUser, ...userData };
+      return createApiResponse(updatedUser);
+    }
+    
+    const response = await api.put(`/api/admin/users/${userId}`, userData);
+    return response.data;
+  },
+
+  deleteUser: async (userId: string) => {
+    if (USE_DUMMY_DATA) {
+      await new Promise(resolve => setTimeout(resolve, 500));
+      return createApiResponse({ message: 'User deleted successfully' });
+    }
+    
+    const response = await api.delete(`/api/admin/users/${userId}`);
+    return response.data;
+  },
+
+  // Loans Management
+  getAllLoans: async () => {
+    if (USE_DUMMY_DATA) {
+      await new Promise(resolve => setTimeout(resolve, 500));
+      return createApiResponse(dummyLoans);
+    }
+    
+    const response = await api.get('/api/admin/loans');
+    return response.data;
+  },
+
+  updateLoanStatus: async (loanId: string, status: 'active' | 'returned' | 'overdue') => {
+    if (USE_DUMMY_DATA) {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      const existingLoan = dummyLoans.find(l => l._id === loanId);
+      if (!existingLoan) throw createApiError('Loan not found', 404);
+      
+      const updatedLoan = { 
+        ...existingLoan, 
+        status,
+        returnedAt: status === 'returned' ? new Date().toISOString() : undefined
+      };
+      return createApiResponse(updatedLoan);
+    }
+    
+    const response = await api.put(`/api/admin/loans/${loanId}`, { status });
     return response.data;
   }
 };
