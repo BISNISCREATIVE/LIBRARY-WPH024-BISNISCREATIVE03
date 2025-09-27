@@ -16,9 +16,16 @@ interface BorrowedBook {
   book: {
     _id: string;
     title: string;
-    author: string;
+    author: {
+      _id: string;
+      name: string;
+      bio?: string;
+    };
     cover: string;
-    category: string;
+    category: {
+      _id: string;
+      name: string;
+    };
   };
   borrowDate: string;
   dueDate: string;
@@ -66,7 +73,7 @@ const BorrowedList = () => {
     if (searchQuery) {
       filtered = filtered.filter(item =>
         item.book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.book.author.toLowerCase().includes(searchQuery.toLowerCase())
+        item.book.author.name.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
@@ -238,13 +245,13 @@ const BorrowedList = () => {
                       />
                       <div className="flex-1">
                         <div className="text-sm text-muted-foreground mb-1">
-                          {item.book.category}
+                          {item.book.category.name}
                         </div>
                         <h3 className="font-semibold text-lg mb-1">
                           {item.book.title}
                         </h3>
                         <p className="text-muted-foreground mb-2">
-                          {item.book.author}
+                          {item.book.author.name}
                         </p>
                         <div className="text-sm text-muted-foreground">
                           {formatDate(item.borrowDate)} • Duration {item.duration} Days
