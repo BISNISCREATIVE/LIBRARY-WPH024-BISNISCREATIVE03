@@ -15,7 +15,8 @@ import Category from "./pages/Category";
 import BorrowedList from "./pages/BorrowedList";
 import Success from "./pages/Success";
 import Checkout from "./pages/Checkout";
-import AdminLogin from "./pages/AdminLogin";
+import AuthorDetail from "./pages/AuthorDetail";
+import AuthorsPage from "./pages/AuthorsPage";
 import AdminDashboard from "./pages/admin/Dashboard";
 import NotFound from "./pages/NotFound";
 import { Toaster as HotToaster } from "react-hot-toast";
@@ -53,6 +54,8 @@ const App = () => (
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/authors" element={<AuthorsPage />} />
+            <Route path="/author/:authorId" element={<AuthorDetail />} />
             <Route path="/book/:id" element={<BookDetail />} />
             <Route path="/category" element={<Category />} />
             <Route path="/borrowed" element={<BorrowedList />} />

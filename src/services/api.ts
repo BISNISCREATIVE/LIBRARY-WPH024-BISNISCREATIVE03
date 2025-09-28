@@ -317,6 +317,55 @@ export const authorsAPI = {
     
     const response = await api.get(`/api/authors/${authorId}/books`);
     return response.data;
+  },
+
+  getAuthorBooks: async (authorId: string) => {
+    if (USE_DUMMY_DATA) {
+      await new Promise(resolve => setTimeout(resolve, 500));
+      const books = dummyBooks.filter(book => book.author._id === authorId);
+      return createApiResponse(books);
+    }
+    
+    const response = await api.get(`/api/authors/${authorId}/books`);
+    return response.data;
+  },
+
+  // Get unlimited authors with pagination support
+  getAuthorsWithPagination: async (page: number = 1, limit: number = 10) => {
+    if (USE_DUMMY_DATA) {
+      await new Promise(resolve => setTimeout(resolve, 300));
+      
+      // Simulate unlimited data by repeating authors with different IDs
+      const totalAuthors = dummyAuthors.length * 50; // Create 250 total authors
+      const startIndex = (page - 1) * limit;
+      const endIndex = Math.min(startIndex + limit, totalAuthors);
+      
+      const paginatedAuthors = [];
+      for (let i = startIndex; i < endIndex; i++) {
+        const originalIndex = i % dummyAuthors.length;
+        const author = dummyAuthors[originalIndex];
+        paginatedAuthors.push({
+          ...author,
+          _id: `${author._id}_${Math.floor(i / dummyAuthors.length)}`,
+          name: `${author.name} ${Math.floor(i / dummyAuthors.length) > 0 ? `(${Math.floor(i / dummyAuthors.length) + 1})` : ''}`
+        });
+      }
+      
+      return createApiResponse({
+        authors: paginatedAuthors,
+        pagination: {
+          page,
+          limit,
+          total: totalAuthors,
+          totalPages: Math.ceil(totalAuthors / limit),
+          hasNext: endIndex < totalAuthors,
+          hasPrev: page > 1
+        }
+      });
+    }
+    
+    const response = await api.get(`/api/authors?page=${page}&limit=${limit}`);
+    return response.data;
   }
 };
 
